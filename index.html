@@ -14,7 +14,7 @@
         body {
             margin: 0;
             font-family: 'Fira Code', monospace;
-            /* 科幻极客背景图 - 使用了高质量的数字矩阵背景 */
+            /* 科幻背景图 */
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
                         url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070');
             background-size: cover;
@@ -25,40 +25,11 @@
             overflow: hidden;
         }
 
-        <div class="profile">
-    <div class="logo-container">
-        <div class="glitch-logo">GFC</div>
-        <div class="scan-line"></div>
-    </div>
-    <h3 style="color: var(--neon-blue); text-shadow: 0 0 10px rgba(0,243,255,0.5);">GeekForgeCode</h3>
-</div>
-
-<style>
-.logo-container {
-    width: 80px; height: 80px; margin: 0 auto 15px;
-    border: 2px solid var(--neon-blue);
-    position: relative; display: flex; align-items: center; justify-content: center;
-    background: rgba(0, 243, 255, 0.05); overflow: hidden;
-}
-.glitch-logo {
-    font-size: 1.8rem; font-weight: bold; color: #fff;
-    letter-spacing: 2px; animation: pulse 2s infinite;
-}
-.scan-line {
-    width: 100%; height: 2px; background: var(--neon-blue);
-    position: absolute; top: 0; box-shadow: 0 0 8px var(--neon-blue);
-    animation: scanVertical 3s linear infinite;
-}
-@keyframes scanVertical { 0% { top: 0; } 100% { top: 100%; } }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-</style>
-        
-        
-        /* 左侧边栏 - 玻璃拟态效果 */
+        /* 左侧边栏 */
         nav {
             width: 280px;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
             border-right: 1px solid var(--neon-blue);
             display: flex;
             flex-direction: column;
@@ -66,81 +37,88 @@
             z-index: 10;
         }
 
+        /* 修复后的 Logo 样式 */
+        .logo-container {
+            width: 80px; height: 80px; margin: 0 auto 15px;
+            border: 2px solid var(--neon-blue);
+            position: relative; display: flex; align-items: center; justify-content: center;
+            background: rgba(0, 243, 255, 0.05); overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+        .glitch-logo {
+            font-size: 1.8rem; font-weight: bold; color: #fff;
+            letter-spacing: 2px; animation: pulse 2s infinite;
+        }
+        .scan-line {
+            width: 100%; height: 2px; background: var(--neon-blue);
+            position: absolute; top: 0; box-shadow: 0 0 8px var(--neon-blue);
+            animation: scanVertical 3s linear infinite;
+        }
+
         .status-box {
             background: rgba(0, 243, 255, 0.1);
-            border: 1px solid var(--neon-blue);
-            padding: 10px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 12px;
             font-size: 0.75rem;
             margin-bottom: 20px;
             border-radius: 4px;
         }
 
         .menu-item {
-            padding: 15px;
-            margin: 8px 0;
-            color: #94a3b8;
-            text-decoration: none;
-            border: 1px solid transparent;
-            transition: 0.3s;
-            display: flex;
-            justify-content: space-between;
+            padding: 15px; margin: 8px 0;
+            color: #94a3b8; text-decoration: none;
+            border: 1px solid transparent; transition: 0.3s;
+            display: flex; justify-content: space-between;
         }
-
         .menu-item:hover {
-            border-color: var(--neon-blue);
-            color: var(--neon-blue);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+            border-color: var(--neon-blue); color: var(--neon-blue);
             background: rgba(0, 243, 255, 0.05);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
         }
 
-        /* 右侧主内容 */
-        main {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.4);
-        }
-
-        .post-link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
+        /* 主内容区 */
+        main { flex: 1; padding: 40px; overflow-y: auto; background: rgba(0, 0, 0, 0.3); }
 
         .post-card {
-            background: var(--bg-dark);
-            border-left: 4px solid var(--neon-purple);
-            padding: 25px;
-            margin-bottom: 20px;
-            transition: 0.3s;
-            cursor: pointer;
+            background: var(--bg-dark); border-left: 4px solid var(--neon-purple);
+            padding: 25px; margin-bottom: 20px; transition: 0.3s; cursor: pointer;
+            border-radius: 0 8px 8px 0;
         }
-
         .post-card:hover {
-            transform: scale(1.02);
-            border-left: 4px solid var(--neon-blue);
+            transform: translateX(10px); border-left: 4px solid var(--neon-blue);
             box-shadow: -5px 0 20px rgba(0, 243, 255, 0.2);
         }
 
-        .tag {
-            font-size: 0.7rem;
-            color: var(--neon-blue);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        /* 动画定义 */
+        @keyframes scanVertical { 0% { top: -5%; } 100% { top: 105%; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        
+        #clock { font-size: 1.2rem; color: var(--neon-blue); font-weight: bold; }
+        #location { color: var(--neon-purple); margin-top: 5px; }
+        .tag { font-size: 0.7rem; color: var(--neon-blue); text-transform: uppercase; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow-y: auto; }
+            nav { width: auto; height: auto; border-right: none; border-bottom: 1px solid var(--neon-blue); }
         }
-
-        #clock { font-size: 1.2rem; color: var(--neon-blue); margin-bottom: 5px; }
-        #location { font-size: 0.8rem; color: var(--neon-purple); }
-
     </style>
 </head>
 <body>
 
     <nav>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div class="logo-container">
+                <div class="glitch-logo">GFC</div>
+                <div class="scan-line"></div>
+            </div>
+            <h3 style="color: var(--neon-blue); text-shadow: 0 0 8px rgba(0,243,255,0.5); margin: 0; letter-spacing: 1px;">GeekForgeCode</h3>
+            <p style="font-size: 0.7rem; color: #64748b; margin-top: 5px;">STAY HUNGRY, STAY GEEK</p>
+        </div>
+
         <div class="status-box">
-            <div id="clock">00:00:00</div>
+            <div id="clock">加载中...</div>
             <div id="location">定位中...</div>
-            <div style="margin-top:5px; color:#4ade80;">● 访客身份: 已授权</div>
+            <div style="margin-top:8px; color:#4ade80; font-size: 0.7rem;">● 节点状态: 在线</div>
         </div>
 
         <a href="index.html" class="menu-item"><span>主页</span><span>/Home</span></a>
@@ -150,44 +128,46 @@
     </nav>
 
     <main>
-        <h2 style="letter-spacing: 4px; border-bottom: 1px solid var(--neon-blue); padding-bottom: 10px;">GEEK_FORGE_ARCHIVE</h2>
+        <h2 style="letter-spacing: 4px; border-bottom: 1px solid rgba(0,243,255,0.3); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;">
+            CONSOLE_SYSTEM <span style="font-weight: lighter; opacity: 0.5;">v2.0</span>
+        </h2>
         
-        <a href="transformer.html" class="post-link">
+        <a href="transformer.html" style="text-decoration: none; color: inherit;">
             <div class="post-card">
                 <span class="tag">#深度学习</span>
-                <h3>Transformer 架构从零实现</h3>
-                <p style="color:#94a3b8;">深入探讨 Self-Attention 机制及其在 LLM 中的核心地位...</p>
-                <small>点击进入深度阅读 →</small>
+                <h3 style="margin: 10px 0;">Transformer 架构从零实现</h3>
+                <p style="color:#94a3b8; font-size: 0.9rem;">Self-Attention 计算逻辑与并行化优势分析...</p>
+                <small style="color: var(--neon-blue);">READ_MORE() →</small>
             </div>
         </a>
 
-        <a href="pentest.html" class="post-link">
+        <a href="pentest.html" style="text-decoration: none; color: inherit;">
             <div class="post-card">
-                <span class="tag">#渗透测试</span>
-                <h3>红队演练：Web 攻防实战指南</h3>
-                <p style="color:#94a3b8;">从 SQLi 到越权访问的完整漏洞挖掘链路图谱...</p>
-                <small>点击查看实战记录 →</small>
+                <span class="tag">#安全研究</span>
+                <h3 style="margin: 10px 0;">红队演练：自动化扫描策略</h3>
+                <p style="color:#94a3b8; font-size: 0.9rem;">基于大模型的漏洞识别算法探讨...</p>
+                <small style="color: var(--neon-blue);">ACCESS_DATA() →</small>
             </div>
         </a>
     </main>
 
     <script>
-        // 实时时钟功能
+        // 时间更新
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('zh-CN', { hour12: false });
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 简单的地理位置获取
+        // 访客定位
         fetch('https://ipapi.co/json/')
             .then(res => res.json())
             .then(data => {
-                document.getElementById('location').innerText = `坐标: ${data.city}, ${data.country_name}`;
+                document.getElementById('location').innerText = `LOC: ${data.city}, ${data.country_code}`;
             })
             .catch(() => {
-                document.getElementById('location').innerText = "坐标: 赛博空间";
+                document.getElementById('location').innerText = "LOC: OFFSET_GRID";
             });
     </script>
 </body>
