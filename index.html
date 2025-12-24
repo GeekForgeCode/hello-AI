@@ -2,57 +2,64 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC | 控制中心</title>
+    <title>GeekForgeCode | 终端实验室</title>
     <style>
-        :root { --blue: #00f3ff; --purple: #bc13fe; --bg: #050505; }
-        body { margin: 0; font-family: 'Fira Code', monospace; background: var(--bg); color: #e2e8f0; display: flex; height: 100vh; overflow: hidden; }
-        
-        /* 侧边栏 */
-        nav { width: 280px; background: rgba(15, 23, 42, 0.9); border-right: 1px solid var(--blue); padding: 30px 20px; backdrop-filter: blur(10px); display: flex; flex-direction: column; }
-        .logo-box { width: 80px; height: 80px; border: 2px solid var(--blue); margin: 0 auto 15px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .scan-line { width: 100%; height: 2px; background: var(--blue); position: absolute; top: 0; animation: scan 3s linear infinite; box-shadow: 0 0 8px var(--blue); }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        :root { --neon-blue: #00f3ff; --dark-bg: #0a0a0f; --mid-bg: #111118; --border: #1f2937; }
+        body { margin: 0; font-family: 'Fira Code', monospace; background: var(--dark-bg); color: #e2e8f0; display: flex; height: 100vh; overflow: hidden; }
 
-        .status-box { background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.3); padding: 12px; font-size: 0.75rem; margin-bottom: 20px; border-radius: 4px; }
-        #clock { font-size: 1.2rem; color: var(--blue); font-weight: bold; }
+        /* 左侧窄导航 (图标栏) */
+        .sidebar-icons { width: 70px; background: #0f172a; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding-top: 20px; gap: 25px; }
+        .icon-btn { width: 40px; height: 40px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; border-radius: 8px; text-decoration: none; font-size: 12px; border: 1px solid transparent; }
+        .icon-btn:hover, .icon-btn.active { color: var(--neon-blue); border-color: var(--neon-blue); background: rgba(0, 243, 255, 0.1); }
 
-        /* 主内容区 */
-        main { flex: 1; padding: 40px; overflow-y: auto; background: linear-gradient(to bottom, rgba(0,243,255,0.05), transparent); }
-        .post-card { background: rgba(20,20,25,0.8); border-left: 4px solid var(--purple); padding: 20px; margin-bottom: 20px; transition: 0.3s; cursor: pointer; text-decoration: none; display: block; color: inherit; }
-        .post-card:hover { transform: translateX(10px); border-left-color: var(--blue); box-shadow: 0 0 20px rgba(0,243,255,0.2); }
+        /* 中间文章列表栏 */
+        .article-list { width: 300px; background: var(--mid-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .list-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); font-weight: bold; letter-spacing: 2px; color: var(--neon-blue); }
+        .list-container { flex: 1; overflow-y: auto; }
+        .list-item { padding: 15px 20px; border-bottom: 1px solid #1a1a24; cursor: pointer; transition: 0.2s; font-size: 0.85rem; color: #94a3b8; text-decoration: none; display: block; }
+        .list-item:hover { background: rgba(255,255,255,0.05); color: #fff; padding-left: 25px; }
+
+        /* 右侧主内容区 (使用 iframe 嵌入模板) */
+        .content-frame { flex: 1; border: none; background: #000; }
+
+        /* 状态栏 (底部) */
+        .status-footer { position: fixed; bottom: 0; left: 0; width: 70px; padding: 10px 0; text-align: center; border-top: 1px solid var(--border); }
+        #clock { font-size: 10px; color: var(--neon-blue); }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="logo-box">
-            <div class="scan-line"></div>
-            <b style="font-size:1.5rem">GFC</b>
+    <nav class="sidebar-icons">
+        <div style="width:40px; height:40px; background:var(--neon-blue); border-radius:50%; margin-bottom:20px; overflow:hidden;">
+            <img src="https://via.placeholder.com/40" alt="Avatar">
         </div>
-        <div style="text-align:center; margin-bottom:20px;">
-            <h3 style="color:var(--blue); margin:0;">GeekForgeCode</h3>
-        </div>
-        <div class="status-box">
-            <div id="clock">00:00:00</div>
-            <div id="location" style="color:var(--purple)">定位中...</div>
-        </div>
-        <a href="index.html" style="color:var(--blue); text-decoration:none; padding:10px; border:1px solid #333; text-align:center;">> SYSTEM_HOME</a>
-    </nav>
-    <main>
-        <h2 style="letter-spacing:4px; border-bottom:1px solid #333; padding-bottom:10px;">ARTICLE_ARCHIVE v2.0</h2>
+        <a href="#" class="icon-btn active">技术</a>
+        <a href="#" class="icon-btn">生活</a>
+        <a href="#" class="icon-btn">架构</a>
+        <a href="#" class="icon-btn">关于</a>
         
-        <a href="post-template.html?md=posts/ai/transformer.md" class="post-card">
-            <span style="color:var(--blue); font-size:0.7rem;">#DEEP_LEARNING</span>
-            <h3>Transformer 架构从零实现</h3>
-            <p style="color:#888; font-size:0.9rem;">Self-Attention 机制与多头注意力解密...</p>
-            <small style="color:var(--blue)">DECRYPT_FILE() →</small>
-        </a>
-    </main>
+        <div class="status-footer">
+            <div id="clock">00:00</div>
+        </div>
+    </nav>
+
+    <aside class="article-list">
+        <div class="list-header">技术存档</div>
+        <div class="list-container">
+            <a href="post-template.html?md=posts/ai/transformer.md" target="viewer" class="list-item">Transformer 架构实现</a>
+            <a href="post-template.html?md=posts/ai/agent-tuning.md" target="viewer" class="list-item">Agent 调优实战</a>
+            <a href="post-template.html?md=posts/ai/llm-eval.md" target="viewer" class="list-item">LLM 评测指南</a>
+        </div>
+    </aside>
+
+    <iframe name="viewer" src="post-template.html?md=posts/ai/transformer.md" class="content-frame"></iframe>
+
     <script>
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
-        fetch('https://ipapi.co/json/').then(r => r.json()).then(d => { 
-            document.getElementById('location').innerText = `LOC: ${d.city}, ${d.country_code}`; 
-        }).catch(() => { document.getElementById('location').innerText = "LOC: OFFLINE_GRID"; });
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
     </script>
 </body>
 </html>
