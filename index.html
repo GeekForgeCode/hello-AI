@@ -25,6 +25,35 @@
             overflow: hidden;
         }
 
+        <div class="profile">
+    <div class="logo-container">
+        <div class="glitch-logo">GFC</div>
+        <div class="scan-line"></div>
+    </div>
+    <h3 style="color: var(--neon-blue); text-shadow: 0 0 10px rgba(0,243,255,0.5);">GeekForgeCode</h3>
+</div>
+
+<style>
+.logo-container {
+    width: 80px; height: 80px; margin: 0 auto 15px;
+    border: 2px solid var(--neon-blue);
+    position: relative; display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 243, 255, 0.05); overflow: hidden;
+}
+.glitch-logo {
+    font-size: 1.8rem; font-weight: bold; color: #fff;
+    letter-spacing: 2px; animation: pulse 2s infinite;
+}
+.scan-line {
+    width: 100%; height: 2px; background: var(--neon-blue);
+    position: absolute; top: 0; box-shadow: 0 0 8px var(--neon-blue);
+    animation: scanVertical 3s linear infinite;
+}
+@keyframes scanVertical { 0% { top: 0; } 100% { top: 100%; } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+</style>
+        
+        
         /* 左侧边栏 - 玻璃拟态效果 */
         nav {
             width: 280px;
