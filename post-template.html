@@ -1,1 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>GFC | 文档解析终端</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    <style>
+        :root { --green: #00ff41; --bg: #050505; }
+        body { background: var(--bg); color: #d1d5db; font-family: 'Fira Code', monospace; margin: 0; line-height: 1.6; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; pointer-events: none; }
+        
+        .container { max-width: 850px; margin: 50px auto; padding: 40px; background: rgba(10,10,10,0.95); border: 1px solid #1f2937; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        
+        #md-content h1, #md-content h2 { color: var(--green); border-bottom: 1px solid #333; padding-bottom: 10px; }
+        #md-content code { color: #79c0ff; background: #161b22; padding: 2px 5px; }
+        pre { background: #0d1117; padding: 15px; border-left: 3px solid var(--green); overflow-x: auto; }
 
+        /* Python 实验室 */
+        .lab-box { border: 1px solid var(--green); margin-top: 40px; background: #000; }
+        .lab-header { background: #222; padding: 8px 15px; font-size: 0.7rem; color: var(--green); display: flex; justify-content: space-between; }
+        textarea { width: 100%; height: 120px; background: #000; color: #fff; border: none; padding: 15px; box-sizing: border-box; font-family: monospace; outline: none; }
+        .run-btn { width: 100%; background: var(--green); border: none; padding: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .run-btn:hover { background: #00cc33; }
+        #python-out { padding: 15px; background: #000; color: #fff; border-top: 1px dashed #333; min-height: 40px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <canvas id="neural"></canvas>
+    <div class="container">
+        <a href="index.html" style="color:var(--green); text-decoration:none; font-size:0.8rem;"><< EXIT_TO_MAIN_FRAME</a>
+        
+        <div id="md-content" style="margin-top:20px;">系统正在载入加密文档...</div>
+
+        <div class="lab-box">
+            <div class="lab-header"><span>PYTHON_KERNEL_v3.11</span><span id="py-status">INITIALIZING...</span></div>
+            <textarea id="py-code">
+# Transformer Scaled Dot-Product Attention 简易模拟
+import math
+d_k = 64
+query, key = 1.2, 1.1
+score = (query * key) / math.sqrt(d_k)
+print(f"注意力得分 (Scaled Score): {score:.4f}")
+            </textarea>
+            <button class="run-btn" onclick="runPy()">▶ 执行验证内核 (EXECUTE)</button>
+            <div id="python-out">等待输入指令...</div>
+        </div>
+
+        <div id="utterances-container" style="margin-top:60px; border-top:1px solid #333; padding-top:20px;"></div>
+    </div>
+
+    <script>
+        // 1. 动态粒子背景
+        const cvs = document.getElementById('neural');
+        const ctx = cvs.getContext('2d');
+        let dots = [];
+        cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+        for(let i=0; i<50; i++) dots.push({x:Math.random()*cvs.width, y:Math.random()*cvs.height, vx:Math.random()-0.5, vy:Math.random()-0.5});
+        function animate() {
+            ctx.clearRect(0,0,cvs.width,cvs.height); ctx.fillStyle='rgba(0,255,65,0.5)';
+            dots.forEach(d => {
+                d.x+=d.vx; d.y+=d.vy;
+                if(d.x<0||d.x>cvs.width) d.vx*=-1; if(d.y<0||d.y>cvs.height) d.vy*=-1;
+                ctx.beginPath(); ctx.arc(d.x, d.y, 2, 0, Math.PI*2); ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 2. Markdown 自动解密渲染
+        const params = new URLSearchParams(window.location.search);
+        const mdPath = params.get('md') || 'posts/ai/transformer.md';
+        fetch(mdPath)
+            .then(r => { if(!r.ok) throw new Error(); return r.text(); })
+            .then(t => { document.getElementById('md-content').innerHTML = marked.parse(t); loadComments(); })
+            .catch(() => { document.getElementById('md-content').innerHTML = "<h1>404_NOT_FOUND</h1><p>无法定位文档路径，请检查 posts 文件夹结构。</p>"; });
+
+        // 3. Python 运行时
+        let pyodide;
+        async function initPy() { pyodide = await loadPyodide(); document.getElementById('py-status').innerText = "SYSTEM_READY"; }
+        initPy();
+        async function runPy() {
+            if(!pyodide) return;
+            const code = document.getElementById('py-code').value;
+            const out = document.getElementById('python-out');
+            out.innerText = "RUNNING...";
+            try {
+                pyodide.runPython(`import sys, io; sys.stdout = io.StringIO()`);
+                await pyodide.runPythonAsync(code);
+                out.innerText = pyodide.runPython("sys.stdout.getvalue()");
+            } catch(e) { out.innerText = "RUNTIME_ERROR: " + e; }
+        }
+
+        // 4. Utterances 留言板
+        function loadComments() {
+            const script = document.createElement('script');
+            script.src = "https://utteranc.es/client.js";
+            script.setAttribute('repo', "GeekForgeCode/hello-AI"); // 这里请务必改为你的真实“用户名/仓库名”
+            script.setAttribute('issue-term', "pathname");
+            script.setAttribute('theme', "github-dark");
+            script.setAttribute('crossorigin', "anonymous");
+            script.async = true;
+            document.getElementById('utterances-container').appendChild(script);
+        }
+    </script>
+</body>
+</html>
