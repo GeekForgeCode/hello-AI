@@ -1,16 +1,165 @@
-echo '<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-    <title>GeekForgeCode的AI实验室</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeekForgeCode | 终端实验室</title>
     <style>
-        body { background-color: #0f172a; color: #38bdf8; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        h1 { border-bottom: 2px solid #38bdf8; padding-bottom: 10px; }
-        .status { color: #4ade80; font-weight: bold; }
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --bg-dark: rgba(10, 10, 15, 0.9);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fira Code', monospace;
+            /* 科幻极客背景图 - 使用了高质量的数字矩阵背景 */
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #e2e8f0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 左侧边栏 - 玻璃拟态效果 */
+        nav {
+            width: 280px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--neon-blue);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            z-index: 10;
+        }
+
+        .status-box {
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid var(--neon-blue);
+            padding: 10px;
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .menu-item {
+            padding: 15px;
+            margin: 8px 0;
+            color: #94a3b8;
+            text-decoration: none;
+            border: 1px solid transparent;
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .menu-item:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        /* 右侧主内容 */
+        main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .post-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .post-card {
+            background: var(--bg-dark);
+            border-left: 4px solid var(--neon-purple);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .post-card:hover {
+            transform: scale(1.02);
+            border-left: 4px solid var(--neon-blue);
+            box-shadow: -5px 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #clock { font-size: 1.2rem; color: var(--neon-blue); margin-bottom: 5px; }
+        #location { font-size: 0.8rem; color: var(--neon-purple); }
+
     </style>
 </head>
 <body>
-    <h1>Hello, AI World!</h1>
-    <p>这是 <span style="color:white">GeekForgeCode</span> 的第一个大模型研究阵地。</p>
-    <p class="status">● 系统运行正常：正在进化为大神中...</p>
+
+    <nav>
+        <div class="status-box">
+            <div id="clock">00:00:00</div>
+            <div id="location">定位中...</div>
+            <div style="margin-top:5px; color:#4ade80;">● 访客身份: 已授权</div>
+        </div>
+
+        <a href="index.html" class="menu-item"><span>主页</span><span>/Home</span></a>
+        <a href="https://github.com/GeekForgeCode" target="_blank" class="menu-item"><span>代码库</span><span>/Git</span></a>
+        <a href="transformer.html" class="menu-item"><span>Transformer</span><span>/Doc</span></a>
+        <a href="about.html" class="menu-item"><span>关于我</span><span>/About</span></a>
+    </nav>
+
+    <main>
+        <h2 style="letter-spacing: 4px; border-bottom: 1px solid var(--neon-blue); padding-bottom: 10px;">GEEK_FORGE_ARCHIVE</h2>
+        
+        <a href="transformer.html" class="post-link">
+            <div class="post-card">
+                <span class="tag">#深度学习</span>
+                <h3>Transformer 架构从零实现</h3>
+                <p style="color:#94a3b8;">深入探讨 Self-Attention 机制及其在 LLM 中的核心地位...</p>
+                <small>点击进入深度阅读 →</small>
+            </div>
+        </a>
+
+        <a href="pentest.html" class="post-link">
+            <div class="post-card">
+                <span class="tag">#渗透测试</span>
+                <h3>红队演练：Web 攻防实战指南</h3>
+                <p style="color:#94a3b8;">从 SQLi 到越权访问的完整漏洞挖掘链路图谱...</p>
+                <small>点击查看实战记录 →</small>
+            </div>
+        </a>
+    </main>
+
+    <script>
+        // 实时时钟功能
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 简单的地理位置获取
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('location').innerText = `坐标: ${data.city}, ${data.country_name}`;
+            })
+            .catch(() => {
+                document.getElementById('location').innerText = "坐标: 赛博空间";
+            });
+    </script>
 </body>
-</html>' > index.html
+</html>
