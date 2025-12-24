@@ -3,172 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeekForgeCode | 终端实验室</title>
+    <title>GFC | 控制中心</title>
     <style>
-        :root {
-            --neon-blue: #00f3ff;
-            --neon-purple: #bc13fe;
-            --bg-dark: rgba(10, 10, 15, 0.9);
-        }
+        :root { --blue: #00f3ff; --purple: #bc13fe; --bg: #050505; }
+        body { margin: 0; font-family: 'Fira Code', monospace; background: var(--bg); color: #e2e8f0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* 侧边栏 */
+        nav { width: 280px; background: rgba(15, 23, 42, 0.9); border-right: 1px solid var(--blue); padding: 30px 20px; backdrop-filter: blur(10px); display: flex; flex-direction: column; }
+        .logo-box { width: 80px; height: 80px; border: 2px solid var(--blue); margin: 0 auto 15px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .scan-line { width: 100%; height: 2px; background: var(--blue); position: absolute; top: 0; animation: scan 3s linear infinite; box-shadow: 0 0 8px var(--blue); }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
-        body {
-            margin: 0;
-            font-family: 'Fira Code', monospace;
-            /* 科幻背景图 */
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070');
-            background-size: cover;
-            background-attachment: fixed;
-            color: #e2e8f0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* 左侧边栏 */
-        nav {
-            width: 280px;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
-            border-right: 1px solid var(--neon-blue);
-            display: flex;
-            flex-direction: column;
-            padding: 30px 20px;
-            z-index: 10;
-        }
-
-        /* 修复后的 Logo 样式 */
-        .logo-container {
-            width: 80px; height: 80px; margin: 0 auto 15px;
-            border: 2px solid var(--neon-blue);
-            position: relative; display: flex; align-items: center; justify-content: center;
-            background: rgba(0, 243, 255, 0.05); overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
-        }
-        .glitch-logo {
-            font-size: 1.8rem; font-weight: bold; color: #fff;
-            letter-spacing: 2px; animation: pulse 2s infinite;
-        }
-        .scan-line {
-            width: 100%; height: 2px; background: var(--neon-blue);
-            position: absolute; top: 0; box-shadow: 0 0 8px var(--neon-blue);
-            animation: scanVertical 3s linear infinite;
-        }
-
-        .status-box {
-            background: rgba(0, 243, 255, 0.1);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            padding: 12px;
-            font-size: 0.75rem;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-
-        .menu-item {
-            padding: 15px; margin: 8px 0;
-            color: #94a3b8; text-decoration: none;
-            border: 1px solid transparent; transition: 0.3s;
-            display: flex; justify-content: space-between;
-        }
-        .menu-item:hover {
-            border-color: var(--neon-blue); color: var(--neon-blue);
-            background: rgba(0, 243, 255, 0.05);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-        }
+        .status-box { background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.3); padding: 12px; font-size: 0.75rem; margin-bottom: 20px; border-radius: 4px; }
+        #clock { font-size: 1.2rem; color: var(--blue); font-weight: bold; }
 
         /* 主内容区 */
-        main { flex: 1; padding: 40px; overflow-y: auto; background: rgba(0, 0, 0, 0.3); }
-
-        .post-card {
-            background: var(--bg-dark); border-left: 4px solid var(--neon-purple);
-            padding: 25px; margin-bottom: 20px; transition: 0.3s; cursor: pointer;
-            border-radius: 0 8px 8px 0;
-        }
-        .post-card:hover {
-            transform: translateX(10px); border-left: 4px solid var(--neon-blue);
-            box-shadow: -5px 0 20px rgba(0, 243, 255, 0.2);
-        }
-
-        /* 动画定义 */
-        @keyframes scanVertical { 0% { top: -5%; } 100% { top: 105%; } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        
-        #clock { font-size: 1.2rem; color: var(--neon-blue); font-weight: bold; }
-        #location { color: var(--neon-purple); margin-top: 5px; }
-        .tag { font-size: 0.7rem; color: var(--neon-blue); text-transform: uppercase; }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; overflow-y: auto; }
-            nav { width: auto; height: auto; border-right: none; border-bottom: 1px solid var(--neon-blue); }
-        }
+        main { flex: 1; padding: 40px; overflow-y: auto; background: linear-gradient(to bottom, rgba(0,243,255,0.05), transparent); }
+        .post-card { background: rgba(20,20,25,0.8); border-left: 4px solid var(--purple); padding: 20px; margin-bottom: 20px; transition: 0.3s; cursor: pointer; text-decoration: none; display: block; color: inherit; }
+        .post-card:hover { transform: translateX(10px); border-left-color: var(--blue); box-shadow: 0 0 20px rgba(0,243,255,0.2); }
     </style>
 </head>
 <body>
-
     <nav>
-        <div style="text-align: center; margin-bottom: 20px;">
-            <div class="logo-container">
-                <div class="glitch-logo">GFC</div>
-                <div class="scan-line"></div>
-            </div>
-            <h3 style="color: var(--neon-blue); text-shadow: 0 0 8px rgba(0,243,255,0.5); margin: 0; letter-spacing: 1px;">GeekForgeCode</h3>
-            <p style="font-size: 0.7rem; color: #64748b; margin-top: 5px;">STAY HUNGRY, STAY GEEK</p>
+        <div class="logo-box">
+            <div class="scan-line"></div>
+            <b style="font-size:1.5rem">GFC</b>
         </div>
-
+        <div style="text-align:center; margin-bottom:20px;">
+            <h3 style="color:var(--blue); margin:0;">GeekForgeCode</h3>
+        </div>
         <div class="status-box">
-            <div id="clock">加载中...</div>
-            <div id="location">定位中...</div>
-            <div style="margin-top:8px; color:#4ade80; font-size: 0.7rem;">● 节点状态: 在线</div>
+            <div id="clock">00:00:00</div>
+            <div id="location" style="color:var(--purple)">定位中...</div>
         </div>
-
-        <a href="index.html" class="menu-item"><span>主页</span><span>/Home</span></a>
-        <a href="https://github.com/GeekForgeCode" target="_blank" class="menu-item"><span>代码库</span><span>/Git</span></a>
-        <a href="transformer.html" class="menu-item"><span>Transformer</span><span>/Doc</span></a>
-        <a href="about.html" class="menu-item"><span>关于我</span><span>/About</span></a>
+        <a href="index.html" style="color:var(--blue); text-decoration:none; padding:10px; border:1px solid #333; text-align:center;">> SYSTEM_HOME</a>
     </nav>
-
     <main>
-        <h2 style="letter-spacing: 4px; border-bottom: 1px solid rgba(0,243,255,0.3); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;">
-            CONSOLE_SYSTEM <span style="font-weight: lighter; opacity: 0.5;">v2.0</span>
-        </h2>
+        <h2 style="letter-spacing:4px; border-bottom:1px solid #333; padding-bottom:10px;">ARTICLE_ARCHIVE v2.0</h2>
         
-        <a href="transformer.html" style="text-decoration: none; color: inherit;">
-            <div class="post-card">
-                <span class="tag">#深度学习</span>
-                <h3 style="margin: 10px 0;">Transformer 架构从零实现</h3>
-                <p style="color:#94a3b8; font-size: 0.9rem;">Self-Attention 计算逻辑与并行化优势分析...</p>
-                <small style="color: var(--neon-blue);">READ_MORE() →</small>
-            </div>
-        </a>
-
-        <a href="pentest.html" style="text-decoration: none; color: inherit;">
-            <div class="post-card">
-                <span class="tag">#安全研究</span>
-                <h3 style="margin: 10px 0;">红队演练：自动化扫描策略</h3>
-                <p style="color:#94a3b8; font-size: 0.9rem;">基于大模型的漏洞识别算法探讨...</p>
-                <small style="color: var(--neon-blue);">ACCESS_DATA() →</small>
-            </div>
+        <a href="post-template.html?md=posts/ai/transformer.md" class="post-card">
+            <span style="color:var(--blue); font-size:0.7rem;">#DEEP_LEARNING</span>
+            <h3>Transformer 架构从零实现</h3>
+            <p style="color:#888; font-size:0.9rem;">Self-Attention 机制与多头注意力解密...</p>
+            <small style="color:var(--blue)">DECRYPT_FILE() →</small>
         </a>
     </main>
-
     <script>
-        // 时间更新
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('zh-CN', { hour12: false });
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // 访客定位
-        fetch('https://ipapi.co/json/')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('location').innerText = `LOC: ${data.city}, ${data.country_code}`;
-            })
-            .catch(() => {
-                document.getElementById('location').innerText = "LOC: OFFSET_GRID";
-            });
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+        fetch('https://ipapi.co/json/').then(r => r.json()).then(d => { 
+            document.getElementById('location').innerText = `LOC: ${d.city}, ${d.country_code}`; 
+        }).catch(() => { document.getElementById('location').innerText = "LOC: OFFLINE_GRID"; });
     </script>
 </body>
 </html>
