@@ -1,6 +1,4 @@
-# 你好，**《hello AI》**
+# 你好, ** <<AI世界>> **
 
-## 来自我的AI世界
-
-```python
-print("AI")
+## AI python 
+``` print(hello AI)
