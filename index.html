@@ -2,36 +2,39 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>AI 人工智能 动态文档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 学习动态文档 - 多级自动版</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        :root { --sidebar-w: 280px; --theme-color: #3498db ; }
-        body { margin: 0; font-family: sans-serif; display: flex; height: 100vh; color: #2c3e50; }
+        :root { --sidebar-w: 280px; --theme-color: #3498db; --bg-light: #f8f9fb; --border-color: #eaecef; }
+        body { margin: 0; font-family: "Segoe UI", sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* 侧边栏样式 */
-        #sidebar { width: var(--sidebar-w); background: #f8f9fb; border-right: 1px solid #eaecef; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 25px; border-bottom: 1px solid #eaecef; }
+        /* 侧边栏 */
+        #sidebar { width: var(--sidebar-w); background: var(--bg-light); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-header { padding: 25px; border-bottom: 1px solid var(--border-color); }
         .logo { font-size: 24px; font-weight: bold; }
         .logo span { color: var(--theme-color); }
 
         .menu-container { flex: 1; overflow-y: auto; padding: 15px; }
-        .group-title { font-size: 12px; color: #999; margin: 20px 0 10px; font-weight: bold; }
+        .group-box { margin-bottom: 20px; }
+        .group-title { font-size: 12px; color: #999; margin: 10px 0 5px 10px; font-weight: bold; text-transform: uppercase; }
         .menu-item {
-            padding: 10px; margin: 4px 0; cursor: pointer; border-radius: 6px;
-            transition: 0.2s; font-size: 14px;
+            padding: 10px 15px; margin: 2px 0; cursor: pointer; border-radius: 8px;
+            font-size: 14px; display: flex; align-items: center; color: #444; transition: 0.2s;
         }
-        .menu-item:hover { background: #eee; }
-        .menu-item.active { background: #fff3ed; color: var(--theme-color); font-weight: bold; }
+        .menu-item:hover { background: #edf2f7; color: var(--theme-color); }
+        .menu-item.active { background: #e3f2fd; color: var(--theme-color); font-weight: bold; }
+        .menu-item i { margin-right: 10px; font-size: 14px; opacity: 0.7; }
 
-        /* 右侧内容区：支持 Markdown 渲染样式 */
-        #content { flex: 1; overflow-y: auto; padding: 40px 60px; background: #fff; }
-        .markdown-body { line-height: 1.6; max-width: 850px; margin: 0 auto; }
-        .markdown-body h1 { border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .markdown-body pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow: auto; }
-        .markdown-body code { font-family: monospace; background: #afb8c133; padding: 2px 4px; border-radius: 4px; }
-        .loading-tip { color: #999; font-style: italic; }
+        /* 内容区 */
+        #content { flex: 1; overflow-y: auto; padding: 40px 60px; background: #fff; scroll-behavior: smooth; }
+        .markdown-body { line-height: 1.8; max-width: 850px; margin: 0 auto; font-size: 16px; }
+        .markdown-body h1 { border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .markdown-body img { max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .loading-tip { text-align: center; color: #999; margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -39,78 +42,93 @@
 <div id="app" style="display: flex; width: 100%;">
     <aside id="sidebar">
         <div class="sidebar-header">
-            <div class="logo"><span>AI</span> 人工智能学习</div>
+            <div class="logo"><span>AI</span> 学习中心</div>
         </div>
         <nav class="menu-container">
-            <div v-for="group in courseConfig" :key="group.group">
-                <div class="group-title">=== {{ group.group }} ===</div>
+            <div v-for="group in structuredList" :key="group.name" class="group-box">
+                <div class="group-title">{{ group.name }}</div>
                 <div
-                    v-for="doc in group.items"
-                    :class="['menu-item', { active: currentFile === doc.file }]"
-                    @click="loadMarkdown(doc.file)"
+                    v-for="item in group.items"
+                    :key="item.path"
+                    :class="['menu-item', { active: currentPath === item.path }]"
+                    @click="loadMarkdown(item.path)"
                 >
-                    <i class="fa-regular fa-file-lines" style="margin-right:8px"></i>
-                    {{ doc.title }}
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>{{ item.title }}</span>
                 </div>
             </div>
         </nav>
     </aside>
 
     <main id="content">
-        <div v-if="loading" class="loading-tip">正在加载内容...</div>
+        <div v-if="loading" class="loading-tip"><i class="fa fa-spinner fa-spin"></i> 正在读取...</div>
         <article v-else class="markdown-body" v-html="renderedHTML"></article>
     </main>
 </div>
 
 <script>
-    // 🌟 这里是你的“中央控制器”
-    const CONFIG = [
-        {
-            group: "一. AI 系统概述",
-            items: [
-                { title: "课程概述", file: "overview.md" },
-                { title: "架构图解析", file: "architecture.md" }
-            ]
-        },
-        {
-            group: "二. AI 硬件体系架构",
-            items: [
-                { title: "GPU 深度学习", file: "gpu.md" },
-                { title: "国产芯片调研", file: "china_chips.md" }
-            ]
-        }
-    ];
-
     new Vue({
         el: '#app',
         data: {
-            courseConfig: CONFIG,
-            currentFile: '',
+            structuredList: [], // 解析后的结构化列表
+            currentPath: '',    // 当前完整路径
             renderedHTML: '',
             loading: false
         },
         methods: {
-            async loadMarkdown(fileName) {
-                this.currentFile = fileName;
+            async fetchList() {
+                try {
+                    const response = await fetch('./posts/list.txt?t=' + Date.now());
+                    const text = await response.text();
+                    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                    
+                    let currentGroup = { name: '默认分组', items: [] };
+                    const groups = [currentGroup];
+
+                    lines.forEach(line => {
+                        if (line.startsWith('#')) {
+                            // 发现新分组
+                            if (currentGroup.items.length === 0) {
+                                currentGroup.name = line.replace('#', '').trim();
+                            } else {
+                                currentGroup = { name: line.replace('#', '').trim(), items: [] };
+                                groups.push(currentGroup);
+                            }
+                        } else {
+                            // 发现文件路径
+                            const fileName = line.split('/').pop();
+                            currentGroup.items.push({
+                                title: fileName.replace('.md', '').replace(/_/g, ' '),
+                                path: line
+                            });
+                        }
+                    });
+
+                    this.structuredList = groups.filter(g => g.items.length > 0);
+                    if (this.structuredList.length > 0) {
+                        this.loadMarkdown(this.structuredList[0].items[0].path);
+                    }
+                } catch (err) {
+                    this.renderedHTML = `<h1>配置加载失败</h1><p>请检查 posts/list.txt</p>`;
+                }
+            },
+
+            async loadMarkdown(path) {
+                this.currentPath = path;
                 this.loading = true;
                 try {
-                    // 使用 fetch 从 posts 目录读取文件
-                    const response = await fetch(`./posts/${fileName}`);
-                    if (!response.ok) throw new Error("文件不存在");
+                    const response = await fetch(`./posts/${path}`);
                     const text = await response.text();
-                    // 调用 marked 将 md 转为 html
                     this.renderedHTML = marked.parse(text);
+                    document.getElementById('content').scrollTop = 0;
                 } catch (err) {
-                    this.renderedHTML = `<h1 style="color:red">加载失败</h1><p>${err.message}</p>`;
+                    this.renderedHTML = `<h1>读取失败</h1><p>路径不存在: posts/${path}</p>`;
                 } finally {
                     this.loading = false;
                 }
             }
         },
-        mounted() {
-            // 默认加载第一个
-            this.loadMarkdown(this.courseConfig[0].items[0].file);
-        }
+        mounted() { this.fetchList(); }
     });
 </script>
 </body>
